@@ -60,10 +60,20 @@ def wallets():
         if a not in known and r.get("added_manually"):
             out.append({"address": a, "label": r.get("label") or a[:6], "role": r.get("role") or "shadow",
                         "score": None, "tier": "manual", "evidence": ["Added manually in the dashboard"], "manual": True})
+    try:
+        for r in q("SELECT * FROM t_operators"):
+            if r["address"] not in {w["address"] for w in out}:
+                out.append({"address": r["address"], "label": r["label"], "role": "operator", "score": None, "tier": "operator",
+                            "evidence": [r.get("note") or ""], "manual": bool(r["manual"]), "operator_auto": not r["manual"]})
+    except Exception:
+        pass
     for w in out:
         o = ov.get(w["address"])
-        default_on = w["role"] == "cupsey" or (w.get("score") or 0) >= 45 or w.get("manual")
+        default_on = (w["role"] == "cupsey" or (w["role"] == "operator" and w.get("manual")) or (w.get("score") or 0) >= 45
+                      or (w.get("manual") and w["role"] != "operator"))
         w["enabled"] = bool(o["enabled"]) if o and o["enabled"] is not None else default_on
         if o and o.get("label"):
             w["label"] = o["label"]
+        if o and o.get("role") in ("suspect", "cupsey") and w["role"] == "shadow":
+            w["role"] = o["role"]
     return out

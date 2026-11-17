@@ -2,7 +2,7 @@
 import os, time, hmac, logging, secrets, json
 from functools import wraps
 from flask import Flask, request, session, redirect, jsonify, render_template, url_for
-import config, db, alerts, watcher, tunnel
+import config, db, alerts, watcher, tunnel, tracker
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s %(name)s %(levelname)s %(message)s")
 app = Flask(__name__, static_folder="static", template_folder="templates")
@@ -143,6 +143,34 @@ def api_wallet():
           int(bool(j.get("add") or cur["added_manually"])), time.time()))
     return jsonify(ok=True)
 
+@app.route("/api/tracker")
+@login_required
+def api_tracker():
+    stats, n = tracker.wallet_stats()
+    watched = {r["address"] for r in db.q("SELECT address FROM wallet_overrides WHERE enabled=1")}
+    for s in stats[:200]:
+        s["watched"] = s["wallet"] in watched
+    ops = db.q("SELECT * FROM t_operators ORDER BY manual DESC, added_ts DESC")
+    en = {w["address"]: w["enabled"] for w in db.wallets() if w["role"] == "operator"}
+    for o in ops:
+        o["enabled"] = en.get(o["address"], False)
+        o["children"] = db.q("SELECT wallet, kind, amount, ts FROM t_links WHERE other=? ORDER BY ts DESC LIMIT 50", (o["address"],))
+    return jsonify(status=tracker.STATUS, n_entries=n, suspects=stats[:200], operators=ops,
+                   entries=db.q("SELECT * FROM t_entries ORDER BY cb DESC LIMIT 60"),
+                   key=bool(config.SOLANATRACKER_API_KEY))
+
+@app.route("/api/operator", methods=["POST"])
+@login_required
+def api_operator():
+    j = request.get_json(force=True); a = (j.get("address") or "").strip()
+    if not (32 <= len(a) <= 44 and a.isalnum()):
+        return jsonify(error="bad address"), 400
+    if j.get("delete"):
+        db.x("DELETE FROM t_operators WHERE address=?", (a,))
+    else:
+        db.x("INSERT OR REPLACE INTO t_operators(address,label,manual,note,added_ts) VALUES(?,?,?,?,?)", (a, j.get("label") or f"Operator {a[:4]}", 1, "added manually", time.time()))
+    return jsonify(ok=True)
+
 @app.route("/api/test-alert", methods=["POST"])
 @login_required
 def api_test():
@@ -151,6 +179,7 @@ def api_test():
 
 def main():
     alerts.start()
+    tracker.start()
     watcher.start()
     if config.TUNNEL:
         tunnel.start()

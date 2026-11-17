@@ -95,3 +95,32 @@ $('#notif').onclick=()=>window.Notification&&Notification.requestPermission();
 $('#test').onclick=async()=>{await api('/api/test-alert',{});$('#test').textContent='Sent ✓'};
 $('#addw').onsubmit=async e=>{e.preventDefault();await api('/api/wallet',{address:$('#addr').value.trim(),label:$('#lbl').value.trim()||null,role:$('#role').value,add:true,enabled:true});e.target.reset();load()};
 load(); setInterval(load,3000);
+
+// ---------- Suspects tab ----------
+let T=null;
+const short=a=>a.slice(0,4)+'…'+a.slice(-4);
+async function loadTracker(){
+  try{T=await api('/api/tracker')}catch(e){return}
+  const st=T.status;
+  $('#tstatus').innerHTML=`${T.n_entries} Cupsey entries analysed · ${st.entries_processed} since start · queue ${st.queue} · ~${st.credits_used} API credits used`+
+    (T.key?'':' · <b style="color:var(--red)">SOLANATRACKER_API_KEY missing: new entries are not analysed</b>')+(st.last_error?` · last error: ${esc(st.last_error)}`:'');
+  $('#operators').innerHTML=T.operators.length?T.operators.map(o=>`<div class="w"><div class="top"><div><b>${esc(o.label)}</b> <span class="tier manual">operator</span>
+     <div class="addr"><a href="https://solscan.io/account/${o.address}" target="_blank" rel="noopener">${o.address}</a></div></div>
+     <div class="toggle"><span class="muted small">${o.manual?'confirmed':'candidate'} · watch</span><div class="switch ${o.enabled?'on':''}" data-sa="${o.address}" data-role="operator" data-on="${o.enabled?1:0}"></div>
+       <button class="ghost small" data-delop="${o.address}">remove</button></div></div>
+     <div class="kv"><span>${esc(o.note||'')}</span><span>linked wallets <b>${o.children.length}</b></span></div>
+     ${o.children.length?`<ul>${o.children.slice(0,15).map(c=>`<li><a class="mono" href="https://solscan.io/account/${c.wallet}" target="_blank" rel="noopener">${short(c.wallet)}</a> · ${esc(c.kind)} ${c.amount?(+c.amount).toFixed(2):''} ${c.ts?'· '+ago(c.ts)+' ago':''}</li>`).join('')}</ul>`:''}</div>`).join('')
+     :'<div class="empty">No operators yet.</div>';
+  $('#susp tbody').innerHTML=T.suspects.slice(0,100).map(s=>`<tr>
+    <td><b style="color:${scoreColor(s.score)}">${s.score}</b></td>
+    <td><a class="mono" href="https://solscan.io/account/${s.wallet}" target="_blank" rel="noopener">${short(s.wallet)}</a>${s.burner?' <span class="tier low">burner</span>':''}</td>
+    <td>${s.hits}/${s.n_pre}</td><td>${Math.round(s.rate*100)}%</td><td class="mono">${s.profit>0?'+':''}${s.profit}</td>
+    <td>${s.lead_s}s</td><td>${s.antic}</td><td>${s.operators.map(o=>`<span class="tier manual" title="${o}">${short(o)}</span>`).join(' ')}</td>
+    <td><div class="switch ${s.watched?'on':''}" data-sa="${s.wallet}" data-on="${s.watched?1:0}"></div></td></tr>`).join('')||'<tr><td colspan="9" class="muted" style="text-align:center;padding:18px">No data yet.</td></tr>';
+  $('#entries tbody').innerHTML=T.entries.map(e=>`<tr><td class="mono">${new Date(e.cb*1000).toLocaleString([], {month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'})}</td>
+    <td>${tokenLink({mint:e.mint,symbol:e.symbol||short(e.mint)})}</td><td class="mono">${e.cupsey_sol?(+e.cupsey_sol).toFixed(1):'–'}</td><td>${esc(e.status)}</td><td>${e.n_pre??'–'}</td><td>${e.n_hits??'–'}</td></tr>`).join('');
+  document.querySelectorAll('[data-sa]').forEach(sw=>sw.onclick=async()=>{const op=sw.dataset.role==='operator';await api('/api/wallet',op?{address:sw.dataset.sa,role:'operator',enabled:sw.dataset.on!=='1'}:{address:sw.dataset.sa,add:true,role:'suspect',label:'Suspect '+sw.dataset.sa.slice(0,4),enabled:sw.dataset.on!=='1'});loadTracker()});
+  document.querySelectorAll('[data-delop]').forEach(b=>b.onclick=async()=>{if(confirm('Remove operator?')){await api('/api/operator',{address:b.dataset.delop,delete:true});loadTracker()}});
+}
+$('#addop').onsubmit=async e=>{e.preventDefault();await api('/api/operator',{address:$('#opaddr').value.trim(),label:$('#oplbl').value.trim()||null});e.target.reset();loadTracker()};
+loadTracker(); setInterval(()=>{if($('#tab-suspects').classList.contains('on'))loadTracker()},15000);

@@ -18,3 +18,11 @@ research/*_cache.json
 research/latest_*.json
 research/2upz_transfers.json
 research/a2.txt
+research/fan_*.txt
+research/fanout_*.json
+research/siblings_tokens.json
+research/prec2.txt
+research/cands2.txt
+research/antic.json
+research/creators_etqr.json
+research/features2.json

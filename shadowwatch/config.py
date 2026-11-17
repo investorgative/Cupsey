@@ -33,7 +33,12 @@ NTFY_SERVER = env("NTFY_SERVER", "https://ntfy.sh")
 TELEGRAM_BOT_TOKEN = env("TELEGRAM_BOT_TOKEN")
 TELEGRAM_CHAT_ID = env("TELEGRAM_CHAT_ID")
 
-SOLANATRACKER_API_KEY = env("SOLANATRACKER_API_KEY")   # only needed for re-running discovery
+SOLANATRACKER_API_KEY = env("SOLANATRACKER_API_KEY")   # needed by the self-learning tracker (~7 credits per Cupsey entry)
+HISTORY_RPC_URLS = [u.strip() for u in env("HISTORY_RPC_URLS", "https://api.mainnet-beta.solana.com").split(",") if u.strip()]
+SUSPECT_AUTO_WATCH_SCORE = float(env("SUSPECT_AUTO_WATCH_SCORE", "55"))  # tracker auto-watches wallets scoring above this
+TRACK_MIN_SOL = float(env("TRACK_MIN_SOL", "5"))            # only analyse Cupsey entries of at least this size
+TRACKER_DAILY_CREDITS = int(env("TRACKER_DAILY_CREDITS", "300"))  # SolanaTracker credit budget per day
+SUSPECT_ALERT_SCORE = float(env("SUSPECT_ALERT_SCORE", "0"))  # suspects (auto/child/manual) ping on every buy/sell
 
 # Alert tuning
 MIN_SHADOW_SCORE_ALERT = float(env("MIN_SHADOW_SCORE_ALERT", "40"))  # shadows below this score are watched but don't ping

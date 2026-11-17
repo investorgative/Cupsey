@@ -2,7 +2,8 @@
 import time, threading, logging, requests
 from concurrent.futures import ThreadPoolExecutor
 import config, db, alerts
-from solana import signatures, get_tx, parse_swap
+from solana import signatures, get_tx, parse_swap, parse_transfers_out
+import tracker
 
 log = logging.getLogger("watcher")
 _meta_cache = {}
@@ -86,9 +87,18 @@ def handle(w, sig, ts, sw):
              tuple(row[k] for k in ("ts","sig","wallet","label","role","side","mint","symbol","name","sol","tokens","mcap")))
     except Exception:
         return  # duplicate signature
+    mint = sw["mint"]
+    if w["role"] == "cupsey":
+        try:
+            if sw["side"] == "BUY": tracker.register_entry(mint, meta["symbol"], ts, sw["sol"])
+            else: tracker.register_exit(mint, ts)
+        except Exception as e:
+            log.warning("tracker hook: %s", e)
+    if w["role"] == "suspect":
+        _suspect_alert(w, row, meta)
+        return
     if not _is_core(w):
         return  # low-conviction wallets are logged on the dashboard only
-    mint = sw["mint"]
     if sw["side"] == "BUY":
         if time.time() - _entry_alerted.get(mint, 0) >= 600:
             threading.Timer(6.0, _entry_check, args=(mint, meta)).start()
@@ -109,6 +119,33 @@ def handle(w, sig, ts, sw):
                 fields=[("Wallet", f"[{row['label']}](https://solscan.io/account/{w['address']})"), ("Size", f"{row['sol']:.3f} SOL"), ("MCap", fmt_mcap(meta['mcap']))])
     db.x("UPDATE events SET alert='exit' WHERE sig=?", (sig,))
 
+def _suspect_alert(w, row, meta):
+    key = (row["mint"], row["side"], w["address"])
+    if time.time() - _exit_alerted.get(key, 0) < 60:
+        return
+    _exit_alerted[key] = time.time()
+    cup = db.q("SELECT COUNT(*) n FROM events WHERE mint=? AND role='cupsey' AND side='BUY' AND ts>=?", (row["mint"], row["ts"] - 3600))[0]["n"]
+    if row["side"] == "BUY":
+        title = f"🕵️ SUSPECT BUY: {meta['symbol']}"
+        body = (f"**{row['label']}** bought **{row['sol']:.2f} SOL** of **{meta['symbol']}**"
+                + (" - Cupsey is already in." if cup else " - Cupsey is NOT in yet. If the pattern holds he buys next."))
+        kind = "shadow_buy"
+    else:
+        title = f"🚨 SUSPECT SELL: {meta['symbol']}"
+        body = f"**{row['label']}** sold {row['sol']:.2f} SOL of **{meta['symbol']}**" + (" while Cupsey holds - exit signal." if cup else ".")
+        kind = "shadow_sell"
+    alerts.send(kind, title, body, mint=row["mint"], urgent=True,
+                fields=[("Wallet", f"[{row['label']}](https://solscan.io/account/{w['address']})"), ("Size", f"{row['sol']:.3f} SOL"), ("MCap", fmt_mcap(meta['mcap']))])
+    db.x("UPDATE events SET alert=? WHERE sig=?", ("suspect_" + row["side"].lower(), row["sig"]))
+
+def poll_operator(w, txsigs):
+    for s in txsigs:
+        for dest, kind, amt in parse_transfers_out(get_tx(s["signature"]), w["address"]):
+            try:
+                tracker.on_operator_transfer(w["address"], dest, kind, amt, s.get("blockTime") or time.time())
+            except Exception as e:
+                log.warning("operator hook: %s", e)
+
 def poll_wallet(w):
     addr = w["address"]
     key = "last_sig:" + addr
@@ -128,6 +165,8 @@ def poll_wallet(w):
     if not got:
         return
     db.kv_set(key, got[0]["signature"])
+    if w["role"] == "operator":
+        return poll_operator(w, list(reversed([s for s in got if not s.get("err")])))
     for s in reversed([s for s in got if not s.get("err")]):
         tx = get_tx(s["signature"])
         sw = parse_swap(tx, addr)

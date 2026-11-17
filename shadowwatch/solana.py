@@ -88,3 +88,49 @@ def parse_swap(tx, wallet):
     if d < 0 and quote > 0.0005:
         return {"side": "SELL", "mint": mint, "sol": quote, "tokens": -d}
     return None
+
+# Full-history RPC (publicnode etc. prune old data). Used by the tracker for funding traces.
+_hist_urls = None
+def rpc_history(method, params, tries=6):
+    global _hist_urls
+    from config import HISTORY_RPC_URLS
+    if _hist_urls is None:
+        _hist_urls = itertools.cycle(HISTORY_RPC_URLS)
+    for t in range(tries):
+        url = next(_hist_urls)
+        try:
+            r = _s.post(url, json={"jsonrpc": "2.0", "id": 1, "method": method, "params": params}, timeout=30)
+            if r.status_code == 429:
+                time.sleep(1 + t); continue
+            j = r.json()
+            if "result" in j:
+                return j["result"]
+            if "429" in str(j.get("error")) or "rate" in str(j.get("error")).lower():
+                time.sleep(1 + t); continue
+            return None
+        except Exception:
+            time.sleep(1 + t)
+    return None
+
+def parse_transfers_out(tx, wallet, min_sol=0.02, min_usdc=20):
+    """Plain SOL / USDC transfers sent BY `wallet` (not swaps). Returns [(dest, kind, amount)]."""
+    if not tx or not tx.get("meta") or tx["meta"].get("err"):
+        return []
+    m = tx["meta"]
+    keys = [k["pubkey"] if isinstance(k, dict) else k for k in tx["transaction"]["message"]["accountKeys"]]
+    if not keys or keys[0] != wallet or len(m.get("postTokenBalances") or []) > 2:
+        return []
+    out = []
+    for j, k in enumerate(keys):
+        d = (m["postBalances"][j] - m["preBalances"][j]) / 1e9
+        if k != wallet and d >= min_sol:
+            out.append((k, "sol", d))
+    pre = {b["accountIndex"]: b for b in m.get("preTokenBalances") or []}
+    for b in m.get("postTokenBalances") or []:
+        if b["mint"] != "EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v" or b.get("owner") == wallet:
+            continue
+        p = pre.get(b["accountIndex"])
+        d = float(b["uiTokenAmount"]["uiAmountString"] or 0) - (float(p["uiTokenAmount"]["uiAmountString"] or 0) if p else 0)
+        if d >= min_usdc:
+            out.append((b.get("owner"), "usdc", d))
+    return out

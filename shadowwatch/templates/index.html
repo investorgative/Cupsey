@@ -5,6 +5,7 @@
   <div class="logo"><span class="dot"></span>ShadowWatch</div>
   <nav>
     <button data-tab="live" class="on">Live</button>
+    <button data-tab="suspects">Suspects</button>
     <button data-tab="wallets">Shadow wallets</button>
     <button data-tab="cupsey">Cupsey</button>
     <button data-tab="method">How it works</button>
@@ -20,13 +21,24 @@
       <button id="notif" class="ghost">Enable browser notifications</button><button id="test" class="ghost">Send test alert</button></div>
     <div class="tablewrap"><table id="feed"><thead><tr><th>Time</th><th>Who</th><th>Side</th><th>Token</th><th>SOL</th><th>MCap</th><th></th></tr></thead><tbody></tbody></table></div>
   </section>
+  <section id="tab-suspects" class="tab">
+    <h2>Self-learning tracker</h2>
+    <p class="muted" id="tstatus"></p>
+    <h3>Operators <span class="muted small">(wallets that fund / collect from front-runners: new wallets they fund are auto-watched)</span></h3>
+    <div id="operators"></div>
+    <form id="addop" class="row"><input id="opaddr" placeholder="Operator address" required><input id="oplbl" placeholder="Label"><button>Add operator</button></form>
+    <h3>Suspects <span class="muted small">(bought before Cupsey and sold into his hold, ranked)</span></h3>
+    <div class="tablewrap"><table id="susp"><thead><tr><th>Score</th><th>Wallet</th><th>Hits</th><th>Hit rate</th><th>Profit</th><th>Lead</th><th>Exit &lt;30s before him</th><th>Links</th><th>Watch</th></tr></thead><tbody></tbody></table></div>
+    <h3>Analysed Cupsey entries</h3>
+    <div class="tablewrap"><table id="entries"><thead><tr><th>Time</th><th>Token</th><th>Cupsey SOL</th><th>Status</th><th>Pre-buyers</th><th>Hits</th></tr></thead><tbody></tbody></table></div>
+  </section>
   <section id="tab-wallets" class="tab">
     <h2>Suspected shadow wallets</h2>
     <p class="muted" id="gen"></p>
     <div id="wallets"></div>
     <h3>Add a wallet manually</h3>
     <form id="addw" class="row"><input id="addr" placeholder="Wallet address" required><input id="lbl" placeholder="Label (optional)">
-      <select id="role"><option value="shadow">shadow</option><option value="cupsey">Cupsey (official)</option></select><button>Add &amp; watch</button></form>
+      <select id="role"><option value="suspect">suspect (alert on every trade)</option><option value="shadow">shadow</option><option value="cupsey">Cupsey (official)</option></select><button>Add &amp; watch</button></form>
   </section>
   <section id="tab-cupsey" class="tab">
     <h2>Cupsey's known wallets</h2><div id="cwallets"></div>
