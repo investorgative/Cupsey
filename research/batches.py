@@ -7,10 +7,11 @@ for ts,k,d,a in pay: rec[d].append((ts,k,a))
 # one-off/large non-payroll recipients since Aug
 skip={'6HA88ZFF','Fe11Bnc3','7DN5VKvr','AXMPqV8s','7NVu2wtt','HMaR7kMw','3szYsTw7'}
 cands=[d for d,v in rec.items() if not any(d.startswith(s) for s in skip) and max(t for t,_,_ in v)>1787000000 and sum(a if k=='USDC' else a*150 for _,k,a in v)>=3000]
+cands=sorted(cands,key=lambda d:-sum(a if k=='USDC' else a*150 for _,k,a in rec[d]))[:15]
 print('candidates',len(cands),flush=True)
 out={}
 for d in cands:
-    try: allr,res=fanout(d,pages=1,max_tx=800)
+    try: allr,res=fanout(d,pages=1,max_tx=400)
     except Exception as e: print(d,'err',e); continue
     ev=sorted(res); batches=[]; i=0
     while i<len(ev):
