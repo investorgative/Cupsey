@@ -31,3 +31,5 @@ research/f2_*.txt
 research/cupsey_aug_*.json
 research/batches.txt
 research/batches.json
+research/downstream.txt
+research/downstream.json
