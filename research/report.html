@@ -1,0 +1,47 @@
+<h2>What I found</h2>
+<p><b>Short version:</b> Cupsey runs his trades through <b>four wallets at once</b>. Two are public and tracked on kolscan; the other two are not attributed to him anywhere I could find:</p>
+<ul>
+  <li><b>Shadow A</b> – <code>FxN3VZ4BosL5urG2yoeQ156JSdmavm9K5fdLxjkPmaMR</code></li>
+  <li><b>Shadow B</b> – <code>7NAd2EpYGGeFofpyvgehSXhH5vg6Ry6VRMW2Y6jiqCu1</code></li>
+</ul>
+<p>Every buy is sent as one bundle: the four transactions land in the <b>same block, at consecutive positions, in shuffled order</b> (for example #144 suqh, #145 7NAd, #146 FxN3, #147 2fg5). In 8 of 48 checked bundles a shadow wallet was ahead of the public wallets. A copy-trader can't do this, because it has to see Cupsey's transaction before it can react. Only the person who signs all four can.</p>
+
+<h3>Evidence (30 days, 15 Oct to 17 Nov 2026)</h3>
+<ul>
+  <li>The two public wallets traded about 1,300 tokens, mostly pump.fun coins at roughly $3–15K market cap, held for a median of about 42 s.</li>
+  <li>From a sample of <b>280 of those tokens</b> I downloaded every trade from 3 minutes before his entry to his exit. That is 42,000 distinct wallets.</li>
+  <li>Shadow A and B appear on <b>234 of 241</b> sampled tokens where his buy fell inside the window (97%). They bought within ±1 s of him 227–229 times.</li>
+  <li>Slot test: same slot in 6 of 6 samples each, and at consecutive tx positions in the same bundle in 9 of 12.</li>
+  <li>Precision: out of the last 1,000 trades of each shadow (23 days), <b>216 of 216 tokens</b> were Cupsey tokens. They trade nothing else.</li>
+  <li>Size: the shadows together put in <b>0.99×</b> what the public wallets put in (median). His real position is about <b>2×</b> what copy-traders see on kolscan.</li>
+  <li>Exit: in 139 of 139 positions with both sides visible, the shadows sold in <b>the same second</b> as the public wallets, never before.</li>
+</ul>
+
+<h3>About the "buys first, then dumps on copy-traders" theory</h3>
+<p>The data supports half of it:</p>
+<ul>
+  <li>✔ He holds about twice the size copy-traders think. Between his entry and the exit, a median of <b>55 other wallets buy about 31 SOL</b>, and the 4-wallet block sells into that after a median of about 25 s. Followers who arrive seconds later are, in effect, the exit liquidity.</li>
+  <li>✘ I found <b>no wallet that consistently buys before him</b>. The shadows enter in the same bundle and exit in the same second. The wallets that do buy 10–200 slots earlier are generic snipers that trade 50–250 tokens an hour; only a few percent of their tokens are Cupsey's.</li>
+</ul>
+<p><b>What that means for the strategy:</b> following the shadow wallets gives <b>no time advantage</b> over following his public wallets, since they move together. What the shadows do give you:</p>
+<ol>
+  <li>confirmation that a buy is a full-size conviction trade (all 4 wallets) rather than a small test buy,</li>
+  <li>a signal that still works if he moves the public wallets or kolscan stops showing them, and</li>
+  <li>an early warning if a <b>new</b> wallet starts appearing in his bundles (you can re-run discovery for that).</li>
+</ol>
+<p>⚠ According to SolanaTracker's parsed trades, the public wallets' <b>closed positions were net negative</b> over these 30 days, with roughly 30% winners. With ~40 s holds and 50+ bots competing for the same entry, a manual follower who arrives 2–5 s late is usually on the wrong side. Test with small size first.</p>
+
+<h3>Other wallets in the list</h3>
+<ul>
+  <li><b>Same-slot followers</b> (9qz7…, AvocW1HY…): they land in the same block as Cupsey but far behind him in that block, and also trade many unrelated tokens. These are almost certainly very fast copy-bots, not him.</li>
+  <li><b>Early snipers</b> (sssss…, G9gmk…, and others): they buy many fresh launches before he does and overlap with him by chance. They are not Cupsey-specific.</li>
+</ul>
+<p>Only the high-tier wallets are watched by default. You can switch any wallet on or off on the "Shadow wallets" tab.</p>
+
+<h3>Method and limits</h3>
+<ul>
+  <li>Data: SolanaTracker Data API (parsed swaps) plus Solana RPC (slots, in-block transaction positions).</li>
+  <li>Conviction score = 35% same-bundle adjacency + 25% precision + 20% co-occurrence + 10% same-slot + 10% same-second rate.</li>
+  <li>Not checked: funding links. These wallets receive thousands of spam transactions an hour, so public RPC can't reach their first funding transaction. Arkham or Helius could, and the bundle evidence is already strong.</li>
+  <li>The sample covers the last 30 days. Shadows get rotated, so re-run discovery every week or two (see the README).</li>
+</ul>

@@ -1,0 +1,39 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ShadowWatch</title><link rel="stylesheet" href="/static/style.css"></head>
+<body>
+<header>
+  <div class="logo"><span class="dot"></span>ShadowWatch</div>
+  <nav>
+    <button data-tab="live" class="on">Live</button>
+    <button data-tab="wallets">Shadow wallets</button>
+    <button data-tab="cupsey">Cupsey</button>
+    <button data-tab="method">How it works</button>
+  </nav>
+  <div class="status" id="status"></div>
+</header>
+<main>
+  <section id="tab-live" class="tab on">
+    <h2>Entries <span class="muted small">(tokens the shadow wallets touched, last 24h)</span></h2>
+    <div id="setups" class="cards"></div>
+    <h2>Live feed</h2>
+    <div class="filters"><label><input type="checkbox" id="f-shadow" checked> shadows</label><label><input type="checkbox" id="f-cupsey" checked> Cupsey</label>
+      <button id="notif" class="ghost">Enable browser notifications</button><button id="test" class="ghost">Send test alert</button></div>
+    <div class="tablewrap"><table id="feed"><thead><tr><th>Time</th><th>Who</th><th>Side</th><th>Token</th><th>SOL</th><th>MCap</th><th></th></tr></thead><tbody></tbody></table></div>
+  </section>
+  <section id="tab-wallets" class="tab">
+    <h2>Suspected shadow wallets</h2>
+    <p class="muted" id="gen"></p>
+    <div id="wallets"></div>
+    <h3>Add a wallet manually</h3>
+    <form id="addw" class="row"><input id="addr" placeholder="Wallet address" required><input id="lbl" placeholder="Label (optional)">
+      <select id="role"><option value="shadow">shadow</option><option value="cupsey">Cupsey (official)</option></select><button>Add &amp; watch</button></form>
+  </section>
+  <section id="tab-cupsey" class="tab">
+    <h2>Cupsey's known wallets</h2><div id="cwallets"></div>
+    <h2>Recent Cupsey trades</h2>
+    <div class="tablewrap"><table id="cfeed"><thead><tr><th>Time</th><th>Wallet</th><th>Side</th><th>Token</th><th>SOL</th><th>MCap</th><th>Shadows before?</th></tr></thead><tbody></tbody></table></div>
+  </section>
+  <section id="tab-method" class="tab"><div id="method" class="prose"></div></section>
+</main>
+<script src="/static/app.js"></script>
+</body></html>

@@ -1,0 +1,13 @@
+.env
+.venv/
+__pycache__/
+shadowwatch/data/*.db*
+research/tok/
+research/*cache.json
+research/trades_*.json
+research/t.json
+research/h.txt
+research/ok_sample.json
+research/*.log
+research/features.json
+research/funding.json

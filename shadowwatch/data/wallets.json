@@ -1,0 +1,626 @@
+{
+ "generated": "2026-11-17 16:30 UTC",
+ "summary": "2 high-conviction shadow wallets found (FxN3\u2026, 7NAd\u2026). They are bundled with Cupsey's public wallets in the same block, match his size 1:1 and exit in the same second. No wallet was found that systematically buys before him.",
+ "method": "<h2>What I found</h2>\n<p><b>Short version:</b> Cupsey runs his trades through <b>four wallets at once</b>. Two are public and tracked on kolscan; the other two are not attributed to him anywhere I could find:</p>\n<ul>\n  <li><b>Shadow A</b> \u2013 <code>FxN3VZ4BosL5urG2yoeQ156JSdmavm9K5fdLxjkPmaMR</code></li>\n  <li><b>Shadow B</b> \u2013 <code>7NAd2EpYGGeFofpyvgehSXhH5vg6Ry6VRMW2Y6jiqCu1</code></li>\n</ul>\n<p>Every buy is sent as one bundle: the four transactions land in the <b>same block, at consecutive positions, in shuffled order</b> (for example #144 suqh, #145 7NAd, #146 FxN3, #147 2fg5). In 8 of 48 checked bundles a shadow wallet was ahead of the public wallets. A copy-trader can't do this, because it has to see Cupsey's transaction before it can react. Only the person who signs all four can.</p>\n\n<h3>Evidence (30 days, 15 Oct to 17 Nov 2026)</h3>\n<ul>\n  <li>The two public wallets traded about 1,300 tokens, mostly pump.fun coins at roughly $3\u201315K market cap, held for a median of about 42 s.</li>\n  <li>From a sample of <b>280 of those tokens</b> I downloaded every trade from 3 minutes before his entry to his exit. That is 42,000 distinct wallets.</li>\n  <li>Shadow A and B appear on <b>234 of 241</b> sampled tokens where his buy fell inside the window (97%). They bought within \u00b11 s of him 227\u2013229 times.</li>\n  <li>Slot test: same slot in 6 of 6 samples each, and at consecutive tx positions in the same bundle in 9 of 12.</li>\n  <li>Precision: out of the last 1,000 trades of each shadow (23 days), <b>216 of 216 tokens</b> were Cupsey tokens. They trade nothing else.</li>\n  <li>Size: the shadows together put in <b>0.99\u00d7</b> what the public wallets put in (median). His real position is about <b>2\u00d7</b> what copy-traders see on kolscan.</li>\n  <li>Exit: in 139 of 139 positions with both sides visible, the shadows sold in <b>the same second</b> as the public wallets, never before.</li>\n</ul>\n\n<h3>About the \"buys first, then dumps on copy-traders\" theory</h3>\n<p>The data supports half of it:</p>\n<ul>\n  <li>\u2714 He holds about twice the size copy-traders think. Between his entry and the exit, a median of <b>55 other wallets buy about 31 SOL</b>, and the 4-wallet block sells into that after a median of about 25 s. Followers who arrive seconds later are, in effect, the exit liquidity.</li>\n  <li>\u2718 I found <b>no wallet that consistently buys before him</b>. The shadows enter in the same bundle and exit in the same second. The wallets that do buy 10\u2013200 slots earlier are generic snipers that trade 50\u2013250 tokens an hour; only a few percent of their tokens are Cupsey's.</li>\n</ul>\n<p><b>What that means for the strategy:</b> following the shadow wallets gives <b>no time advantage</b> over following his public wallets, since they move together. What the shadows do give you:</p>\n<ol>\n  <li>confirmation that a buy is a full-size conviction trade (all 4 wallets) rather than a small test buy,</li>\n  <li>a signal that still works if he moves the public wallets or kolscan stops showing them, and</li>\n  <li>an early warning if a <b>new</b> wallet starts appearing in his bundles (you can re-run discovery for that).</li>\n</ol>\n<p>\u26a0 According to SolanaTracker's parsed trades, the public wallets' <b>closed positions were net negative</b> over these 30 days, with roughly 30% winners. With ~40 s holds and 50+ bots competing for the same entry, a manual follower who arrives 2\u20135 s late is usually on the wrong side. Test with small size first.</p>\n\n<h3>Other wallets in the list</h3>\n<ul>\n  <li><b>Same-slot followers</b> (9qz7\u2026, AvocW1HY\u2026): they land in the same block as Cupsey but far behind him in that block, and also trade many unrelated tokens. These are almost certainly very fast copy-bots, not him.</li>\n  <li><b>Early snipers</b> (sssss\u2026, G9gmk\u2026, and others): they buy many fresh launches before he does and overlap with him by chance. They are not Cupsey-specific.</li>\n</ul>\n<p>Only the high-tier wallets are watched by default. You can switch any wallet on or off on the \"Shadow wallets\" tab.</p>\n\n<h3>Method and limits</h3>\n<ul>\n  <li>Data: SolanaTracker Data API (parsed swaps) plus Solana RPC (slots, in-block transaction positions).</li>\n  <li>Conviction score = 35% same-bundle adjacency + 25% precision + 20% co-occurrence + 10% same-slot + 10% same-second rate.</li>\n  <li>Not checked: funding links. These wallets receive thousands of spam transactions an hour, so public RPC can't reach their first funding transaction. Arkham or Helius could, and the bundle evidence is already strong.</li>\n  <li>The sample covers the last 30 days. Shadows get rotated, so re-run discovery every week or two (see the README).</li>\n</ul>\n",
+ "cupsey": [
+  {
+   "address": "2fg5QD1eD7rzNNCsvnhmXFm5hqNgwTTG8p7kQ6f3rx6f",
+   "label": "Cupsey (kolscan)",
+   "tier": "official",
+   "evidence": [
+    "Wallet listed as Cupsey on kolscan.io (linked to x.com/Cupseyy)"
+   ]
+  },
+  {
+   "address": "suqh5sHtr8HyJ7q8scBimULPkPpA557prMG47xCHQfK",
+   "label": "Cupsey #2 (older public)",
+   "tier": "official",
+   "evidence": [
+    "Older publicly attributed Cupsey wallet",
+    "Buys the same token within 2 s of the kolscan wallet in 97% of cases (1118 / 1156 shared tokens)"
+   ]
+  }
+ ],
+ "shadows": [
+  {
+   "address": "FxN3VZ4BosL5urG2yoeQ156JSdmavm9K5fdLxjkPmaMR",
+   "label": "Shadow A (FxN3)",
+   "score": 94,
+   "tier": "high",
+   "kind": "Bundled shadow wallet",
+   "evidence": [
+    "Traded 233 of 280 sampled Cupsey tokens (83%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 227 tokens; bought 1\u2013180 s before him on 1",
+    "Slot test (6 samples): same slot as Cupsey 6\u00d7, consecutive tx in the same bundle 5\u00d7",
+    "Of its own recent tokens, 216/216 (100%) were also traded by Cupsey",
+    "Bought before Cupsey and sold while he was holding on 1 tokens"
+   ],
+   "stats": {
+    "type": "Bundled shadow wallet",
+    "tokens": "233/280",
+    "same-sec": 227,
+    "pre-buys": 1,
+    "precision": "100%"
+   }
+  },
+  {
+   "address": "7NAd2EpYGGeFofpyvgehSXhH5vg6Ry6VRMW2Y6jiqCu1",
+   "label": "Shadow B (7NAd)",
+   "score": 88,
+   "tier": "high",
+   "kind": "Bundled shadow wallet",
+   "evidence": [
+    "Traded 234 of 280 sampled Cupsey tokens (84%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 229 tokens; bought 1\u2013180 s before him on 1",
+    "Slot test (6 samples): same slot as Cupsey 6\u00d7, consecutive tx in the same bundle 4\u00d7",
+    "Of its own recent tokens, 216/216 (100%) were also traded by Cupsey"
+   ],
+   "stats": {
+    "type": "Bundled shadow wallet",
+    "tokens": "234/280",
+    "same-sec": 229,
+    "pre-buys": 1,
+    "precision": "100%"
+   }
+  },
+  {
+   "address": "9qz7cWBqYBP2TnGfzMmxX64G4PQip7HtogjPBBnMhWpw",
+   "label": "Same-slot follower 9qz7",
+   "score": 30,
+   "tier": "low",
+   "kind": "Same-slot follower (fast copy-bot?)",
+   "evidence": [
+    "Traded 103 of 280 sampled Cupsey tokens (37%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 51 tokens; bought 1\u2013180 s before him on 42",
+    "Slot test (6 samples): same slot as Cupsey 6\u00d7, consecutive tx in the same bundle 0\u00d7",
+    "Of its own recent tokens, 16/153 (10%) were also traded by Cupsey",
+    "Bought before Cupsey and sold while he was holding on 20 tokens"
+   ],
+   "stats": {
+    "type": "Same-slot follower (fast copy-bot?)",
+    "tokens": "103/280",
+    "same-sec": 51,
+    "pre-buys": 42,
+    "precision": "10%"
+   }
+  },
+  {
+   "address": "AvocW1HYwENdgbY89es1nAhJMPgtVdbdVmC29tLpCiGv",
+   "label": "Same-slot follower Avoc",
+   "score": 26,
+   "tier": "low",
+   "kind": "Same-slot follower (fast copy-bot?)",
+   "evidence": [
+    "Traded 62 of 280 sampled Cupsey tokens (22%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 43 tokens; bought 1\u2013180 s before him on 13",
+    "Slot test (6 samples): same slot as Cupsey 6\u00d7, consecutive tx in the same bundle 0\u00d7",
+    "Of its own recent tokens, 13/155 (8%) were also traded by Cupsey",
+    "Bought before Cupsey and sold while he was holding on 7 tokens"
+   ],
+   "stats": {
+    "type": "Same-slot follower (fast copy-bot?)",
+    "tokens": "62/280",
+    "same-sec": 43,
+    "pre-buys": 13,
+    "precision": "8%"
+   }
+  },
+  {
+   "address": "9XYTEyCD3oTy664SaVwCaAh6pLumLRtNXJ1F4gf5L3WZ",
+   "label": "Co-trader 9XYT",
+   "score": 24,
+   "tier": "low",
+   "kind": "Co-trader",
+   "evidence": [
+    "Traded 109 of 280 sampled Cupsey tokens (39%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 68 tokens; bought 1\u2013180 s before him on 4",
+    "Bought before Cupsey and sold while he was holding on 2 tokens"
+   ],
+   "stats": {
+    "type": "Co-trader",
+    "tokens": "109/280",
+    "same-sec": 68,
+    "pre-buys": 4,
+    "precision": "\u2013"
+   }
+  },
+  {
+   "address": "ssssswdk4RR8HqkE3uwUWzDbd6mXFTTPjcXBKNzQ57E",
+   "label": "Early sniper ssss",
+   "score": 21,
+   "tier": "low",
+   "kind": "Early sniper (not Cupsey-specific)",
+   "evidence": [
+    "Traded 113 of 280 sampled Cupsey tokens (40%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 26 tokens; bought 1\u2013180 s before him on 63",
+    "Slot test (6 samples): same slot as Cupsey 3\u00d7, consecutive tx in the same bundle 0\u00d7",
+    "Trades ~154 tokens/hour vs Cupsey's ~2/hour \u2192 at most ~1% overlap (generic sniper)",
+    "Bought before Cupsey and sold while he was holding on 35 tokens"
+   ],
+   "stats": {
+    "type": "Early sniper (not Cupsey-specific)",
+    "tokens": "113/280",
+    "same-sec": 26,
+    "pre-buys": 63,
+    "precision": "\u2013"
+   }
+  },
+  {
+   "address": "2z2q5gk8TDgqCidzkXkyevXH1aDaVjWL8cQwoRbMF1Jq",
+   "label": "Early sniper 2z2q",
+   "score": 19,
+   "tier": "low",
+   "kind": "Early sniper (not Cupsey-specific)",
+   "evidence": [
+    "Traded 95 of 280 sampled Cupsey tokens (34%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 8 tokens; bought 1\u2013180 s before him on 48",
+    "Slot test (6 samples): same slot as Cupsey 1\u00d7, consecutive tx in the same bundle 0\u00d7",
+    "Bought before Cupsey and sold while he was holding on 11 tokens"
+   ],
+   "stats": {
+    "type": "Early sniper (not Cupsey-specific)",
+    "tokens": "95/280",
+    "same-sec": 8,
+    "pre-buys": 48,
+    "precision": "\u2013"
+   }
+  },
+  {
+   "address": "3fhE7MimYJ56j4MHRnvDPaRUowDy76YHSmvjACW8h6tA",
+   "label": "Co-trader 3fhE",
+   "score": 17,
+   "tier": "low",
+   "kind": "Co-trader",
+   "evidence": [
+    "Traded 16 of 280 sampled Cupsey tokens (6%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 16 tokens; bought 1\u2013180 s before him on 0"
+   ],
+   "stats": {
+    "type": "Co-trader",
+    "tokens": "16/280",
+    "same-sec": 16,
+    "pre-buys": 0,
+    "precision": "\u2013"
+   }
+  },
+  {
+   "address": "3vKC1m1CgNL3AU27NTYZ93zfpPeFV9JSAV9k9oMuD4HW",
+   "label": "Early sniper 3vKC",
+   "score": 16,
+   "tier": "low",
+   "kind": "Early sniper (not Cupsey-specific)",
+   "evidence": [
+    "Traded 79 of 280 sampled Cupsey tokens (28%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 9 tokens; bought 1\u2013180 s before him on 41",
+    "Slot test (6 samples): same slot as Cupsey 3\u00d7, consecutive tx in the same bundle 0\u00d7",
+    "Trades ~66 tokens/hour vs Cupsey's ~2/hour \u2192 at most ~3% overlap (generic sniper)",
+    "Bought before Cupsey and sold while he was holding on 8 tokens"
+   ],
+   "stats": {
+    "type": "Early sniper (not Cupsey-specific)",
+    "tokens": "79/280",
+    "same-sec": 9,
+    "pre-buys": 41,
+    "precision": "\u2013"
+   }
+  },
+  {
+   "address": "DiJF3L3796seiwyjmwfTz9wHUCCP5kmeMQM6kDzzjXax",
+   "label": "Early sniper DiJF",
+   "score": 16,
+   "tier": "low",
+   "kind": "Early sniper (not Cupsey-specific)",
+   "evidence": [
+    "Traded 62 of 280 sampled Cupsey tokens (22%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 13 tokens; bought 1\u2013180 s before him on 33",
+    "Slot test (6 samples): same slot as Cupsey 4\u00d7, consecutive tx in the same bundle 0\u00d7",
+    "Of its own recent tokens, 0/262 (0%) were also traded by Cupsey",
+    "Bought before Cupsey and sold while he was holding on 15 tokens"
+   ],
+   "stats": {
+    "type": "Early sniper (not Cupsey-specific)",
+    "tokens": "62/280",
+    "same-sec": 13,
+    "pre-buys": 33,
+    "precision": "0%"
+   }
+  },
+  {
+   "address": "6oriVAU8X2rFH7tRpwtAgbQCRyC3TXzFN53H8Y9JqR5X",
+   "label": "Co-trader 6ori",
+   "score": 16,
+   "tier": "low",
+   "kind": "Co-trader",
+   "evidence": [
+    "Traded 14 of 280 sampled Cupsey tokens (5%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 13 tokens; bought 1\u2013180 s before him on 1",
+    "Bought before Cupsey and sold while he was holding on 1 tokens"
+   ],
+   "stats": {
+    "type": "Co-trader",
+    "tokens": "14/280",
+    "same-sec": 13,
+    "pre-buys": 1,
+    "precision": "\u2013"
+   }
+  },
+  {
+   "address": "sssssDdMNAWKingjpEojkTNdVuZrBe7FsJLaGtexe7d",
+   "label": "Early sniper ssss",
+   "score": 15,
+   "tier": "low",
+   "kind": "Early sniper (not Cupsey-specific)",
+   "evidence": [
+    "Traded 105 of 280 sampled Cupsey tokens (38%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 17 tokens; bought 1\u2013180 s before him on 53",
+    "Slot test (6 samples): same slot as Cupsey 0\u00d7, consecutive tx in the same bundle 0\u00d7",
+    "Trades ~89 tokens/hour vs Cupsey's ~2/hour \u2192 at most ~2% overlap (generic sniper)",
+    "Bought before Cupsey and sold while he was holding on 24 tokens"
+   ],
+   "stats": {
+    "type": "Early sniper (not Cupsey-specific)",
+    "tokens": "105/280",
+    "same-sec": 17,
+    "pre-buys": 53,
+    "precision": "\u2013"
+   }
+  },
+  {
+   "address": "Fhbh1DTUDKt6qu9zVg8Q5VgnZa1WWWbxBxG6pCoJoggA",
+   "label": "Early sniper Fhbh",
+   "score": 15,
+   "tier": "low",
+   "kind": "Early sniper (not Cupsey-specific)",
+   "evidence": [
+    "Traded 37 of 280 sampled Cupsey tokens (13%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 6 tokens; bought 1\u2013180 s before him on 21",
+    "Slot test (6 samples): same slot as Cupsey 4\u00d7, consecutive tx in the same bundle 0\u00d7",
+    "Trades ~21 tokens/hour vs Cupsey's ~2/hour \u2192 at most ~8% overlap (generic sniper)",
+    "Bought before Cupsey and sold while he was holding on 8 tokens"
+   ],
+   "stats": {
+    "type": "Early sniper (not Cupsey-specific)",
+    "tokens": "37/280",
+    "same-sec": 6,
+    "pre-buys": 21,
+    "precision": "\u2013"
+   }
+  },
+  {
+   "address": "sssssCUP5wgSW3sxjtQNa7u88ytE4st2Z7goX5kKNwi",
+   "label": "Co-trader ssss",
+   "score": 15,
+   "tier": "low",
+   "kind": "Co-trader",
+   "evidence": [
+    "Traded 65 of 280 sampled Cupsey tokens (23%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 30 tokens; bought 1\u2013180 s before him on 24",
+    "Slot test (6 samples): same slot as Cupsey 1\u00d7, consecutive tx in the same bundle 0\u00d7",
+    "Trades ~59 tokens/hour vs Cupsey's ~2/hour \u2192 at most ~3% overlap (generic sniper)",
+    "Bought before Cupsey and sold while he was holding on 13 tokens"
+   ],
+   "stats": {
+    "type": "Co-trader",
+    "tokens": "65/280",
+    "same-sec": 30,
+    "pre-buys": 24,
+    "precision": "\u2013"
+   }
+  },
+  {
+   "address": "64hP97Bwr5PubotcTeGgfhkFrGiLVVxT2kVo9M9b4AEz",
+   "label": "Early sniper 64hP",
+   "score": 13,
+   "tier": "low",
+   "kind": "Early sniper (not Cupsey-specific)",
+   "evidence": [
+    "Traded 75 of 280 sampled Cupsey tokens (27%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 1 tokens; bought 1\u2013180 s before him on 38",
+    "Slot test (4 samples): same slot as Cupsey 1\u00d7, consecutive tx in the same bundle 0\u00d7",
+    "Of its own recent tokens, 16/332 (5%) were also traded by Cupsey",
+    "Bought before Cupsey and sold while he was holding on 18 tokens"
+   ],
+   "stats": {
+    "type": "Early sniper (not Cupsey-specific)",
+    "tokens": "75/280",
+    "same-sec": 1,
+    "pre-buys": 38,
+    "precision": "5%"
+   }
+  },
+  {
+   "address": "omegoMAe1AMY5MFKQQr3JwXVy8F4eCvmBAfcpo8XAfq",
+   "label": "Early sniper omeg",
+   "score": 12,
+   "tier": "low",
+   "kind": "Early sniper (not Cupsey-specific)",
+   "evidence": [
+    "Traded 80 of 280 sampled Cupsey tokens (29%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 3 tokens; bought 1\u2013180 s before him on 44",
+    "Slot test (5 samples): same slot as Cupsey 1\u00d7, consecutive tx in the same bundle 0\u00d7",
+    "Trades ~86 tokens/hour vs Cupsey's ~2/hour \u2192 at most ~2% overlap (generic sniper)",
+    "Bought before Cupsey and sold while he was holding on 14 tokens"
+   ],
+   "stats": {
+    "type": "Early sniper (not Cupsey-specific)",
+    "tokens": "80/280",
+    "same-sec": 3,
+    "pre-buys": 44,
+    "precision": "\u2013"
+   }
+  },
+  {
+   "address": "BUkpShoEWRiPckdFs3kzYGjBPfUhL6G39ufo84QeogPP",
+   "label": "Early sniper BUkp",
+   "score": 12,
+   "tier": "low",
+   "kind": "Early sniper (not Cupsey-specific)",
+   "evidence": [
+    "Traded 88 of 280 sampled Cupsey tokens (31%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 10 tokens; bought 1\u2013180 s before him on 49",
+    "Slot test (6 samples): same slot as Cupsey 0\u00d7, consecutive tx in the same bundle 0\u00d7",
+    "Trades ~110 tokens/hour vs Cupsey's ~2/hour \u2192 at most ~2% overlap (generic sniper)",
+    "Bought before Cupsey and sold while he was holding on 18 tokens"
+   ],
+   "stats": {
+    "type": "Early sniper (not Cupsey-specific)",
+    "tokens": "88/280",
+    "same-sec": 10,
+    "pre-buys": 49,
+    "precision": "\u2013"
+   }
+  },
+  {
+   "address": "Dxm74DtsrTmgdQXMrffzrRdaRhxpbWVhLcFVgwBbeTLN",
+   "label": "Early sniper Dxm7",
+   "score": 12,
+   "tier": "low",
+   "kind": "Early sniper (not Cupsey-specific)",
+   "evidence": [
+    "Traded 51 of 280 sampled Cupsey tokens (18%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 6 tokens; bought 1\u2013180 s before him on 31",
+    "Bought before Cupsey and sold while he was holding on 14 tokens"
+   ],
+   "stats": {
+    "type": "Early sniper (not Cupsey-specific)",
+    "tokens": "51/280",
+    "same-sec": 6,
+    "pre-buys": 31,
+    "precision": "\u2013"
+   }
+  },
+  {
+   "address": "1mGRiNd5QgddUpASfGRftpQRKMB2peE5hj1gMF6f5Hp",
+   "label": "Early sniper 1mGR",
+   "score": 12,
+   "tier": "low",
+   "kind": "Early sniper (not Cupsey-specific)",
+   "evidence": [
+    "Traded 47 of 280 sampled Cupsey tokens (17%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 8 tokens; bought 1\u2013180 s before him on 30",
+    "Bought before Cupsey and sold while he was holding on 8 tokens"
+   ],
+   "stats": {
+    "type": "Early sniper (not Cupsey-specific)",
+    "tokens": "47/280",
+    "same-sec": 8,
+    "pre-buys": 30,
+    "precision": "\u2013"
+   }
+  },
+  {
+   "address": "6hQSw5JDEjVvqFes2vwGnYFq9b44Yjq9wxeNVBYJpHSb",
+   "label": "Early sniper 6hQS",
+   "score": 12,
+   "tier": "low",
+   "kind": "Early sniper (not Cupsey-specific)",
+   "evidence": [
+    "Traded 27 of 280 sampled Cupsey tokens (10%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 9 tokens; bought 1\u2013180 s before him on 18",
+    "Bought before Cupsey and sold while he was holding on 1 tokens"
+   ],
+   "stats": {
+    "type": "Early sniper (not Cupsey-specific)",
+    "tokens": "27/280",
+    "same-sec": 9,
+    "pre-buys": 18,
+    "precision": "\u2013"
+   }
+  },
+  {
+   "address": "GpWzQoGQRY5Lcb4NTeZvb2HjCcG5y8Wy46TBejzZu18g",
+   "label": "Early sniper GpWz",
+   "score": 11,
+   "tier": "low",
+   "kind": "Early sniper (not Cupsey-specific)",
+   "evidence": [
+    "Traded 25 of 280 sampled Cupsey tokens (9%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 7 tokens; bought 1\u2013180 s before him on 15",
+    "Bought before Cupsey and sold while he was holding on 5 tokens"
+   ],
+   "stats": {
+    "type": "Early sniper (not Cupsey-specific)",
+    "tokens": "25/280",
+    "same-sec": 7,
+    "pre-buys": 15,
+    "precision": "\u2013"
+   }
+  },
+  {
+   "address": "DYXDDrZCLZVeak72eoPg7DgjYz1sW7tMaLY8PusDymQw",
+   "label": "Early sniper DYXD",
+   "score": 11,
+   "tier": "low",
+   "kind": "Early sniper (not Cupsey-specific)",
+   "evidence": [
+    "Traded 82 of 280 sampled Cupsey tokens (29%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 9 tokens; bought 1\u2013180 s before him on 45",
+    "Of its own recent tokens, 1/187 (1%) were also traded by Cupsey",
+    "Bought before Cupsey and sold while he was holding on 18 tokens"
+   ],
+   "stats": {
+    "type": "Early sniper (not Cupsey-specific)",
+    "tokens": "82/280",
+    "same-sec": 9,
+    "pre-buys": 45,
+    "precision": "1%"
+   }
+  },
+  {
+   "address": "4HgMCR7abFKHDPgYfMrtjvKniPXj4zHwuSNNRVx7QEzQ",
+   "label": "Early sniper 4HgM",
+   "score": 11,
+   "tier": "low",
+   "kind": "Early sniper (not Cupsey-specific)",
+   "evidence": [
+    "Traded 15 of 280 sampled Cupsey tokens (5%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 6 tokens; bought 1\u2013180 s before him on 8",
+    "Bought before Cupsey and sold while he was holding on 2 tokens"
+   ],
+   "stats": {
+    "type": "Early sniper (not Cupsey-specific)",
+    "tokens": "15/280",
+    "same-sec": 6,
+    "pre-buys": 8,
+    "precision": "\u2013"
+   }
+  },
+  {
+   "address": "2zMj6wNqNKSa3dG8ioUDi71P2uijKiojLwEizVGKWRjG",
+   "label": "Early sniper 2zMj",
+   "score": 10,
+   "tier": "low",
+   "kind": "Early sniper (not Cupsey-specific)",
+   "evidence": [
+    "Traded 57 of 280 sampled Cupsey tokens (20%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 19 tokens; bought 1\u2013180 s before him on 25",
+    "Of its own recent tokens, 0/194 (0%) were also traded by Cupsey",
+    "Bought before Cupsey and sold while he was holding on 7 tokens"
+   ],
+   "stats": {
+    "type": "Early sniper (not Cupsey-specific)",
+    "tokens": "57/280",
+    "same-sec": 19,
+    "pre-buys": 25,
+    "precision": "0%"
+   }
+  },
+  {
+   "address": "GUorX1qCqqNXb6feCp3ZPKC8KkDxc9gH7Ho3ZqDFGX8v",
+   "label": "Early sniper GUor",
+   "score": 10,
+   "tier": "low",
+   "kind": "Early sniper (not Cupsey-specific)",
+   "evidence": [
+    "Traded 26 of 280 sampled Cupsey tokens (9%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 5 tokens; bought 1\u2013180 s before him on 16",
+    "Bought before Cupsey and sold while he was holding on 5 tokens"
+   ],
+   "stats": {
+    "type": "Early sniper (not Cupsey-specific)",
+    "tokens": "26/280",
+    "same-sec": 5,
+    "pre-buys": 16,
+    "precision": "\u2013"
+   }
+  },
+  {
+   "address": "EJX629cpqnoa7jNRUBsFeevfPLxFWoa4KWWfsX7teLHr",
+   "label": "Early sniper EJX6",
+   "score": 10,
+   "tier": "low",
+   "kind": "Early sniper (not Cupsey-specific)",
+   "evidence": [
+    "Traded 24 of 280 sampled Cupsey tokens (9%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 4 tokens; bought 1\u2013180 s before him on 14",
+    "Bought before Cupsey and sold while he was holding on 8 tokens"
+   ],
+   "stats": {
+    "type": "Early sniper (not Cupsey-specific)",
+    "tokens": "24/280",
+    "same-sec": 4,
+    "pre-buys": 14,
+    "precision": "\u2013"
+   }
+  },
+  {
+   "address": "3MHgGwdLnNayxYZ2eggq2AZFYydXjzBepyTMKzVsyNLq",
+   "label": "Early sniper 3MHg",
+   "score": 10,
+   "tier": "low",
+   "kind": "Early sniper (not Cupsey-specific)",
+   "evidence": [
+    "Traded 62 of 280 sampled Cupsey tokens (22%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 17 tokens; bought 1\u2013180 s before him on 30",
+    "Of its own recent tokens, 0/171 (0%) were also traded by Cupsey",
+    "Bought before Cupsey and sold while he was holding on 11 tokens"
+   ],
+   "stats": {
+    "type": "Early sniper (not Cupsey-specific)",
+    "tokens": "62/280",
+    "same-sec": 17,
+    "pre-buys": 30,
+    "precision": "0%"
+   }
+  },
+  {
+   "address": "5g8bviwgHv6gKzCerSjQbFoYxfHnWawNLLn99HDjpUX3",
+   "label": "Early sniper 5g8b",
+   "score": 10,
+   "tier": "low",
+   "kind": "Early sniper (not Cupsey-specific)",
+   "evidence": [
+    "Traded 17 of 280 sampled Cupsey tokens (6%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 5 tokens; bought 1\u2013180 s before him on 11",
+    "Bought before Cupsey and sold while he was holding on 2 tokens"
+   ],
+   "stats": {
+    "type": "Early sniper (not Cupsey-specific)",
+    "tokens": "17/280",
+    "same-sec": 5,
+    "pre-buys": 11,
+    "precision": "\u2013"
+   }
+  },
+  {
+   "address": "EMKY7r6UekmmR1hREwCaPy835tCDGXGCw8fqibybgqzc",
+   "label": "Early sniper EMKY",
+   "score": 9,
+   "tier": "low",
+   "kind": "Early sniper (not Cupsey-specific)",
+   "evidence": [
+    "Traded 59 of 280 sampled Cupsey tokens (21%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 10 tokens; bought 1\u2013180 s before him on 38",
+    "Slot test (6 samples): same slot as Cupsey 0\u00d7, consecutive tx in the same bundle 0\u00d7",
+    "Trades ~195 tokens/hour vs Cupsey's ~2/hour \u2192 at most ~1% overlap (generic sniper)",
+    "Bought before Cupsey and sold while he was holding on 17 tokens"
+   ],
+   "stats": {
+    "type": "Early sniper (not Cupsey-specific)",
+    "tokens": "59/280",
+    "same-sec": 10,
+    "pre-buys": 38,
+    "precision": "\u2013"
+   }
+  },
+  {
+   "address": "7y5aRdzh5ZBYDhM4qKBwXzUUjKBSBperbrgWiE7AoAHG",
+   "label": "Early sniper 7y5a",
+   "score": 9,
+   "tier": "low",
+   "kind": "Early sniper (not Cupsey-specific)",
+   "evidence": [
+    "Traded 33 of 280 sampled Cupsey tokens (12%) in the window around his entry",
+    "Bought within \u00b11 s of Cupsey on 1 tokens; bought 1\u2013180 s before him on 25",
+    "Bought before Cupsey and sold while he was holding on 7 tokens"
+   ],
+   "stats": {
+    "type": "Early sniper (not Cupsey-specific)",
+    "tokens": "33/280",
+    "same-sec": 1,
+    "pre-buys": 25,
+    "precision": "\u2013"
+   }
+  }
+ ]
+}
