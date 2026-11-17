@@ -45,3 +45,20 @@
   <li>Not checked: funding links. These wallets receive thousands of spam transactions an hour, so public RPC can't reach their first funding transaction. Arkham or Helius could, and the bundle evidence is already strong.</li>
   <li>The sample covers the last 30 days. Shadows get rotated, so re-run discovery every week or two (see the README).</li>
 </ul>
+<h2>Part 2: Looking for wallets that buy <i>before</i> him and sell into his pump</h2>
+<p>Prompted by the Pan Bao Bao chart (<code>6ZbWPYxF…pump</code>). Cupsey is now mostly trading from <b><code>6DQAGJT7VZPVBsuG4kn3AvpyHCEi7B2RFFvMZdbqQqqP</code></b> (768 coins in 7 days, ≈ +1,300 SOL), which is not on kolscan. This wallet is now watched.</p>
+<p><b>Data:</b> his <b>110 most recent big entries</b> (first buy ≥ 5 SOL). For each one I took every trade in the 60 min before his buy plus his whole hold: 16,000 wallets. A "hit" means the wallet bought before him and sold at least 50% of that position while he was holding.</p>
+<h3>What I tested</h3>
+<ul>
+  <li><b>Repeat pre-buyers.</b> Some wallets hit 10–20 of his coins (e.g. <code>72tAZ…</code> +108 SOL, <code>G9gmk…</code> +106 SOL). But they trade 100–200 coins every few hours, and in their recent history Cupsey bought <b>0</b> of their coins afterwards. They are hyperactive traders who catch his coins by volume, not shadows.</li>
+  <li><b>Precision for the top 70 candidates</b> (of a wallet's own coins, how often does Cupsey buy within 60 min after it): almost all are 3–9%. The best is <code>ETqRpFdA…</code> at 26%.</li>
+  <li><b><code>ETqRpFdA…</code></b> is the closest match to your pattern. It was a burner active for only 11 h (16 Nov 18:08 → 17 Nov 05:22). In 80 minutes it pre-bought 9 of Cupsey's big entries 2–227 s before him and was out 2–12 s before his exit: 63 SOL in → 138 SOL out, while Cupsey <b>lost on 8 of those 9</b>. However:
+    <ul><li>those coins were only 5–14 s old when he bought; <code>ETqR</code> bought 9–45 slots after launch, never in the creator's block, and the creator was different every time;</li>
+    <li>its money came in through a USDC→SOL swap on a DEX pool and went out to <code>4sAUSQ…</code>, a private wallet with no link to any Cupsey wallet;</li>
+    <li>it trades with GMGN preset round sizes, like a fast manual sniper. Another GMGN wallet, <code>3tsMk1…</code>, did the same on the same coins that evening.</li></ul>
+    My reading: a fast sniper who often picks the same fresh coins as Cupsey, not his own wallet. It hasn't traded since.</li>
+  <li><b>Rotating fresh wallets (funding graph):</b> I traced the first funder of 1,636 profitable pre-buyers. The funders that recur are exchange hot wallets (Binance-sized balances) or large funding/swap services. <code>2UPzAimP…</code> looked promising: it funded 3 Pan Bao Bao pre-buyers that bought together at 15:40:22 (4.7 min before him) and burners on 4 other Cupsey coins. But it took in about 1,900 SOL from exchanges and paid out to hundreds of wallets in 12 h, so it's a service and doesn't prove common ownership.</li>
+  <li><b>Coin age:</b> 24 of 60 measurable big entries happened in the coin's first minute. On those, "bought before him" mostly means "sniped the launch".</li>
+</ul>
+<h3>Conclusion</h3>
+<p>What the chart shows is real: on every Cupsey coin, people who bought earlier sell into his buy and the copy-trader wave. But with on-chain data I could <b>not</b> find a stable wallet, or a wallet cluster I could prove, that does this repeatedly and selectively on his coins. The early sellers are a different crowd each time, mostly snipers and hyperactive traders. If a real shadow network exists, it rotates fresh wallets funded through exchanges or swap services. Linking those needs exchange-attribution data (Arkham, paid Helius) that free sources don't have.</p>

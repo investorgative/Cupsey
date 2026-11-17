@@ -11,3 +11,10 @@ research/ok_sample.json
 research/*.log
 research/features.json
 research/funding.json
+research/tok2/
+research/features2.json
+research/panbao.json
+research/*_cache.json
+research/latest_*.json
+research/2upz_transfers.json
+research/a2.txt
