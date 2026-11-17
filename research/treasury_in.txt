@@ -1,0 +1,5 @@
+treasury sigs 3000
+<stdin>:4: DeprecationWarning: datetime.datetime.utcfromtimestamp() is deprecated and scheduled for removal in a future version. Use timezone-aware objects to represent datetimes in UTC: datetime.datetime.fromtimestamp(timestamp, datetime.UTC).
+Hmc2dLxZZ4xfHqn2wFCTBu11oCpYiuwsj23JBjJmD4ni USDC 1 x 189520.0 08-16 22:51 -> 08-16 22:51 | EXCHANGE-like bal 16.1
+BCNsHAH2887uUF4gdZsph28oNYbgpjgrtVk7Fi7yN67t SOL 116 x 26991.5 01-24 07:04 -> 11-16 10:29 | busy bal 1.6
+9PQNbkKHFCwcZVB8h48SRPEmKZgKUz28dyCMJfMedSJ7 USDC 1 x 652.1 08-29 12:52 -> 08-29 12:52 | EXCHANGE-like bal 0.1
