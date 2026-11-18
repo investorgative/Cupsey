@@ -33,25 +33,40 @@ def check(owner,mint,prog,cb,fs,b0):
     tx=[]
     for s in sorted(win,key=lambda s:s['slot']):
         t=rpc('getTransaction',[s['signature'],{'encoding':'jsonParsed','maxSupportedTransactionVersion':1}],history=True)
+        if not t:
+            for k in range(4):
+                time.sleep(3*(k+1)); t=rpc('getTransaction',[s['signature'],{'encoding':'jsonParsed','maxSupportedTransactionVersion':1}],history=True)
+                if t: break
         if not t: return dict(status='error',ata=a)
         post=None
         for bb in t['meta'].get('postTokenBalances') or []:
             if bb['mint']==mint and bb.get('owner')==owner: post=float(bb['uiTokenAmount']['uiAmountString'] or 0)
         tr=[x for x in decode(t,mint) if x[0]==owner]
+        pre={bb['accountIndex']:bb for bb in t['meta'].get('preTokenBalances') or []}
+        gain=[]
+        for bb in t['meta'].get('postTokenBalances') or []:
+            if bb['mint']!=mint or bb.get('owner')==owner: continue
+            p0=pre.get(bb['accountIndex']); dv=float(bb['uiTokenAmount']['uiAmountString'] or 0)-(float(p0['uiTokenAmount']['uiAmountString'] or 0) if p0 else 0)
+            if dv>0: gain.append((bb.get('owner'),dv))
+        xfer=[g for g in gain if not tr] if not tr else []
         tx.append(dict(time=s['blockTime']*1000,slot=s['slot'],post=post if post is not None else 0.0,
                        sold=sum(x[2] for x in tr if x[1]=='sell'),bought=sum(x[2] for x in tr if x[1]=='buy'),
-                       sol_out=sum(x[3] for x in tr if x[1]=='sell'),sol_in=sum(x[3] for x in tr if x[1]=='buy'),sig=s['signature']))
+                       sol_out=sum(x[3] for x in tr if x[1]=='sell'),sol_in=sum(x[3] for x in tr if x[1]=='buy'),sig=s['signature'],xfer=xfer,signer=t['transaction']['message']['accountKeys'][0]['pubkey']))
     endb=tx[-1]['post']; bought=sum(x['bought'] for x in tx)
     exited=endb<=0.05*b0 and bought<=0.2*b0
     return dict(status='exited' if exited else 'traded',ata=a,end=endb,tx=tx,
                 first_sell=min((x['time'] for x in tx if x['sold']>0),default=None),
-                sol_out=sum(x['sol_out'] for x in tx),sol_in=sum(x['sol_in'] for x in tx))
+                sol_out=sum(x['sol_out'] for x in tx),sol_in=sum(x['sol_in'] for x in tx),
+                xfer_to=sorted({o for x in tx for o,_ in x['xfer']}))
 def run(fn):
     d=json.load(open(fn)); e=d['entry']; mint=e['mint']; out=f'{OUT}/{mint}.json'
     if os.path.exists(out) or not d['full']: return
     cb,fs=e['cb'],e['first_sell']
     info=rpc('getAccountInfo',[mint,{'encoding':'jsonParsed'}]); prog=info['value']['owner']
     px=cupsey_price(mint,e)
+    if not px:   # fall back: average price of the last 20 trades before his buy
+        tl=[x for t in d['txs'][-200:] for x in t['trades'] if x[2]>0][-20:]
+        px=sum(x[3] for x in tl)/sum(x[2] for x in tl) if tl else None
     bal,first,signers,last=snapshot(d)
     H=[]
     for o,b in bal.items():
@@ -65,6 +80,11 @@ def run(fn):
         except Exception as ex: h.update(status='error',err=str(ex))
         return h
     with ThreadPoolExecutor(6) as ex: H=list(ex.map(job,H))
+    for rnd in range(3):
+        bad=[h for h in H if h['status']=='error']
+        if not bad: break
+        time.sleep(10)
+        with ThreadPoolExecutor(2) as ex: list(ex.map(job,bad))
     json.dump(dict(mint=mint,cb=cb,fs=fs,pnl=e['pnl'],entry=e['entry'],px=px,creator=d['creator'],launch_time=d['launch_time'],
                    holders=H),open(out,'w'))
     c={};[c.__setitem__(h['status'],c.get(h['status'],0)+1) for h in H]

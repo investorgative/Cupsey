@@ -55,6 +55,7 @@ def run(e):
 if __name__=='__main__':
     L=order()
     if len(sys.argv)>1 and sys.argv[1]=='rev': L=L[::-1]
+    if len(sys.argv)>1 and sys.argv[1]=='mid': import random; random.seed(5); random.shuffle(L)
     for e in L:
         try: run(e)
         except Exception as ex: print('ERR',e['mint'][:6],ex,flush=True)
