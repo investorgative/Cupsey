@@ -34,3 +34,9 @@ research/batches.json
 research/downstream.txt
 research/downstream.json
 research/loop_*.json
+research/tok3/
+research/backfill*.log
+research/entries_6DQAG.json
+research/insider_*.json
+research/entities_*.json
+research/holdout.json
