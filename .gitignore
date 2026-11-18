@@ -40,3 +40,5 @@ research/entries_6DQAG.json
 research/insider_*.json
 research/entities_*.json
 research/holdout.json
+research/funder2_cache.json
+research/rotation_hubs.json
