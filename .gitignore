@@ -44,3 +44,6 @@ research/funder2_cache.json
 research/rotation_hubs.json
 research/rotation2.json
 research/fp_jobs.json
+research/clusters.json
+research/operators.json
+research/prec_rpc.log
