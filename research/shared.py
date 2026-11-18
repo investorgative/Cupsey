@@ -33,7 +33,7 @@ if __name__=='__main__':
   ws=[w for w in ws if w in A and not activity.bot(A[w])]
   print('candidates',len(C),'non-bot',len(ws),flush=True)
   if 'trace' in sys.argv:
-    with ThreadPoolExecutor(2) as ex: list(ex.map(run_trace,ws))
+    with ThreadPoolExecutor(int(os.environ.get("TH","5"))) as ex: list(ex.map(run_trace,ws))
   # shared counterparties
   CP=collections.defaultdict(lambda: collections.defaultdict(list))
   for w in ws:
