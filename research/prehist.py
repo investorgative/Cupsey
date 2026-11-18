@@ -5,6 +5,7 @@ from concurrent.futures import ThreadPoolExecutor
 from rpctrades import sigs, rpc, decode
 OUT='tok4'; os.makedirs(OUT,exist_ok=True)
 CAP=20000
+MAXOK=9000
 def order():
     E=json.load(open('entries_6DQAG.json'))
     for e in E: e['pnl']=sum(s for _,s in e['sells'])-sum(b for _,b in e['buys'])
@@ -31,11 +32,14 @@ def run(e):
     open(lock,'w').close(); t0=time.time()
     try:
         allr=[];b=e['buy_tx'];full=False
-        while len(allr)<CAP:
+        while len(allr)<150000:          # listing is cheap; fetching is not
             r=sigs(e['mint'],before=b); allr+=r
             if len(r)<1000: full=True; break
             b=r[-1]['signature']
         ok=[s for s in allr if not s.get('err')]
+        if not full or len(ok)>MAXOK:
+            json.dump(dict(entry=e,full=False,skipped=True,n_sigs=len(allr),n_ok=len(ok),txs=[]),open(fn,'w'))
+            print(e['mint'][:6],'SKIP pnl',round(e['pnl'],1),'sigs',len(allr),'ok',len(ok),flush=True); return
         with ThreadPoolExecutor(8) as ex: R=list(ex.map(lambda s:one(s,e['mint']),ok))
         for rnd in range(4):   # retry what the rate limiter dropped, slower each round
             todo=[i for i,r in enumerate(R) if r is None]
