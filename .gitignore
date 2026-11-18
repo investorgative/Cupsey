@@ -47,3 +47,6 @@ research/fp_jobs.json
 research/clusters.json
 research/operators.json
 research/prec_rpc.log
+research/tok4/
+research/tok4x/
+research/holdsigs/
