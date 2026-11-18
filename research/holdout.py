@@ -2,6 +2,7 @@
 then checked on the NEWER half they were not selected on."""
 import json,collections,math,sys,os,itertools
 from insider import CUP
+MINW=int(os.environ.get("MINW","30000"))
 def entries():
     E={}
     big=json.load(open('big_tokens.json'))
@@ -22,7 +23,7 @@ def stats(E):
         tr=e['trades']; cb=e['cb']; fs=e['fs']
         if not tr: continue
         cov=cb-min(t['time'] for t in tr); W=min(120_000,cov//3)
-        if W<30_000: continue
+        if W<MINW: continue
         used+=1
         cs=[t.get('slot') for t in tr if t['wallet'] in CUP and t['type']=='buy' and t.get('slot')]; cslot=min(cs) if cs else None
         by=collections.defaultdict(list)
