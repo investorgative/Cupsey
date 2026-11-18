@@ -95,7 +95,7 @@ def analyse(mint, cb, cs, trades, cupsey):
         for t in ts:
             progs[t.get("program", "?")] = progs.get(t.get("program", "?"), 0) + 1
         buys = [t for t in ts if t["type"] == "buy"]
-        obs.append(dict(wallet=w, mint=mint, cb=cb / 1000, hit=int(hit), lead_s=(cb - min(t["time"] for t in pb)) / 1000,
+        obs.append(dict(wallet=w, mint=mint, cb=cb / 1000, hit=int(hit), first_buy=min(t["time"] for t in pb), lead_s=(cb - min(t["time"] for t in pb)) / 1000,
                         sol_in=sol_in, sol_out=sol_out,
                         first_sell_s=((min(t["time"] for t in sd) - cb) / 1000) if sd else None,
                         exit_before_s=((cs - max(t["time"] for t in sd)) / 1000) if sd else None,
@@ -155,8 +155,33 @@ def process_entry(e):
                 trace(o["wallet"])
             except Exception as ex:
                 log.debug("trace %s failed: %s", o["wallet"], ex)
+    link_coslot(e["mint"], hits)
     refresh_operators()
     flag_new_suspects()
+
+def link_coslot(mint, hits):
+    """Throwaways run by one operator buy in the SAME block. Pair up early sellers whose first pre-buy
+    landed in the same second; a pair that repeats on a 2nd Cupsey coin is one operator -> watch both."""
+    by = {}
+    for o in hits:
+        by.setdefault(int(o["first_buy"] // 1000), []).append(o["wallet"])
+    for sec, ws in by.items():
+        if len(ws) < 2 or len(ws) > 40:
+            continue
+        for i, a in enumerate(ws):
+            for b in ws[i + 1:]:
+                a1, b1 = sorted((a, b))
+                db.x("INSERT OR IGNORE INTO t_links(wallet,other,kind,amount,ts) VALUES(?,?,?,?,?)", (a1, b1, "coslot:" + mint, None, sec))
+                n = db.q("SELECT COUNT(*) n FROM t_links WHERE wallet=? AND other=? AND kind LIKE 'coslot:%'", (a1, b1))[0]["n"]
+                if n < 2:
+                    continue
+                for w in (a1, b1):
+                    if not db.q("SELECT 1 FROM wallet_overrides WHERE address=?", (w,)):
+                        db.x("INSERT INTO wallet_overrides(address,enabled,label,role,added_manually,added_ts) VALUES(?,?,?,?,?,?)",
+                             (w, 1, f"Co-block {w[:4]}", "suspect", 1, time.time()))
+                alerts.send("shadow_buy", "🧩 Coordinated wallets found",
+                            f"`{a1[:6]}…` and `{b1[:6]}…` bought in the same block before Cupsey and sold into him on {n} of his coins. "
+                            "Both are watched now; one operator is probably running them.", urgent=True)
 
 # ---------------- LINK ----------------
 def _transfers_in_tx(t, me):
@@ -366,6 +391,9 @@ def seed_from_file(path):
         data = json.load(open(path))
     except Exception:
         return
+    for addr, label in data.get("watch", []):   # always applied, so new research reaches an already-seeded Pi
+        db.x("INSERT OR IGNORE INTO wallet_overrides(address,enabled,label,role,added_manually,added_ts) VALUES(?,?,?,?,?,?)",
+             (addr, 1, label, "suspect", 1, time.time()))
     if db.q("SELECT COUNT(*) n FROM t_entries")[0]["n"] > 0:
         return
     for e in data.get("entries", []):

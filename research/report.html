@@ -71,3 +71,19 @@
   <li><b>Gas/profit wallet <code>4sAUSQ…</code></b>: paid ETqR's fees and received 44.5 SOL of its profit, then passed money on to <code>CjbR3X…</code>, which also gets USDC from the treasury.</li>
 </ul>
 <p><b>What I can't say:</b> there's no on-chain link from this network to any Cupsey wallet; the treasury paid none of them. It could be a trading group that has an edge on Cupsey (fast coin picks, an insider in his circle, or watching his stream), or something more direct. Either way, the useful part for you is the same: <b>the treasury and the distributor are watched now</b>, so the next batch of burners shows up on the dashboard the moment it's funded, before its first trade.</p>
+<h2>Part 4: Deep dive — is there a reliable insider system?</h2>
+<p><b>Data:</b> <b>208 of Cupsey's big entries</b> (≥ 5 SOL, 11–17 Nov), collected for free through Solana RPC: every trade from before his buy until he sold, with block numbers. That's 7,800 wallets that bought before him. Every finding below had to hold up on the <b>older half</b> and again on the <b>newer half</b>, against a comparison group of ordinary early buyers.</p>
+<h3>Five tests</h3>
+<ol>
+<li><b>Single wallets (older vs newer half):</b> wallets picked because they front-ran him on the older coins did <b>not</b> do it again on the newer coins (0 of 1 candidates replicated). The repeat early buyers are high-volume traders: <code>G9gmk</code>, <code>omegoM</code>, <code>kEFiAX</code>, <code>sssss…</code>.</li>
+<li><b>Funding (rotation test):</b> I traced the first funder of 531 profitable early sellers and 531 comparison wallets. Shared private funders were <b>no more common</b> among the early sellers (15) than in the comparison group (11). Every recurring funder I checked is an exchange, a service or a platform account, and the wallets they fund are generic traders (0–10% selectivity).</li>
+<li><b>Execution fingerprint</b> (router, tip account and amount, compute settings) of 1,800 pre-buy transactions: most are retail bots (Axiom, GMGN, Photon-type) and appear just as often in the comparison group. A few multi-wallet bundles share an exact tip amount (one operator, several wallets), but each appears on only 1–2 coins or buys <i>after</i> him (bundled copy-traders).</li>
+<li><b>Same-block operator graph:</b> wallets that bought in the <b>same block</b> before him on ≥ 2 different coins are linked. That gives 76 operators. <b>Almost all of them lose money</b> on his coins.</li>
+<li><b>Selectivity</b> (of a wallet's own coins, how many does Cupsey buy afterwards; random ≈ 0.5%): every candidate is 0–10%, except one.</li>
+</ol>
+<h3>The one exception</h3>
+<p><code>ETqRpF…</code> + <code>3tsMk1…</code> + <code>EGKn9P…</code> bought <b>in the same block, 2–5 s before Cupsey</b>, on 3 coins (GckXCq, 7889s6, THG6x2), sold into him in the same blocks, and made about +23 SOL on 5 of 6 coins. They're funded three different ways: by the treasury's distributor, by a platform account, and by an exchange. So <b>they are linked only by trading in the same block</b>, not by money. For <code>EGKn9P</code>, Cupsey bought 35–40% of its coins afterwards.<br>
+But everything happened on <b>one evening (16 Nov, 19:14–20:18)</b>. Since then <code>EGKn9P</code> has traded about 5 coins, and Cupsey bought none of the two I could check.</p>
+<h3>Conclusion</h3>
+<p>In one week of data there's <b>no network that reliably buys before Cupsey and sells into his pump</b>. What exists is one short campaign by the treasury group, and throwaways that are only linked by trading in the same block. Funding gives no early warning because it runs through exchanges. The usable signal is what the Pi now does automatically:
+<b>when two early sellers buy in the same block before him and sell into him on a second coin, both are watched and you get a 🧩 alert</b>. <code>EGKn9P</code> and <code>3tsMk1</code> are on the watch list.</p>

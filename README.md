@@ -60,7 +60,8 @@ Your idea: the shadows are throwaway wallets, so following one wallet doesn't wo
 1. **Learn:** after every Cupsey entry of 5 SOL or more (by default), the Pi downloads that coin's trades from 60 minutes before his buy until he sells. It records every wallet that bought before him and sold at least half while he held, along with its lead time, profit, whether it got out under 30 s before him, and which trading app it used.
 2. **Rank:** suspects are scored on repeats, hit rate, early exits and profit, and above all **precision**: how often Cupsey buys a coin after this wallet bought it. Hyperactive traders who catch his coins by volume score low.
 3. **Link:** for profitable early buyers it traces who funded them (first SOL, first **USDC**, first co-signer) and where the profit went. An address linked to several such wallets becomes a *candidate operator*.
-4. **Catch:** confirmed operators are watched. **When an operator funds a new wallet, that wallet is auto-watched immediately**, so you're alerted on its first trade: 🕵️ SUSPECT BUY ("Cupsey is NOT in yet…") and 🚨 SUSPECT SELL.
+4. **Co-block:** throwaways run by one operator buy in the **same block**. When two early sellers do that before Cupsey on a second coin, both are auto-watched and you get a 🧩 *Coordinated wallets* alert (this is the only link that survived the deep dive; funding runs through exchanges).
+5. **Catch:** confirmed operators are watched. **When an operator funds a new wallet, that wallet is auto-watched immediately**, so you're alerted on its first trade: 🕵️ SUSPECT BUY ("Cupsey is NOT in yet…") and 🚨 SUSPECT SELL.
 
 The tracker starts with today's research: 111 entries, about 5,000 early-buyer hits, the `EzcD6 → 3szYs → burner` network and 4 confirmed operators.
 Cost: about 7–15 SolanaTracker credits per entry analysed (capped by `TRACKER_DAILY_CREDITS`). Funding traces use the free RPC.
